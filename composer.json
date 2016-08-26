@@ -1,7 +1,7 @@
 {
     "name": "nissicreative/phptools",
     "description": "A collection of traits and utilities to assist with common requirements in PHP development.",
-    "version": "0.1",
+    "version": "1.0.0",
     "keywords": ["php", "utility", "tools"],
     "require": {
         "php": "^5.6",
