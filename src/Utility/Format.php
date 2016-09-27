@@ -6,13 +6,9 @@ class Format
     /**
      * Formats a US phone number.
      *
-     * @access public
-     * @param  string   $phone
-     * @param  string   $format  (default: 'intl')
-     * @param  array    $options (default: [])
      * @return string
      */
-    public function phone($phone, $format = 'intl', array $options = [])
+    public function phone($phoneNumber, $format = null, array $options = [])
     {
         $defaults = [
             'require_area_code' => true,
@@ -24,7 +20,7 @@ class Format
         $options += $defaults;
         extract($options);
 
-        $digits = preg_replace('/\D/', '', $phone);
+        $digits = preg_replace('/\D/', '', $phoneNumber);
 
         // Optional country code (1), optional area code (first number 2-9), seven digit phone
         if ( ! preg_match('@^(1)?([2-9][0-9]{2})?([0-9]{3})([0-9]{4}$)@', $digits, $matches)) {

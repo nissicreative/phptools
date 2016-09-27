@@ -1,5 +1,4 @@
 <?php
-
 namespace Nissi\Utility;
 
 class Text
@@ -29,6 +28,64 @@ class Text
         $string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
 
         return htmlspecialchars($string, ENT_QUOTES, 'UTF-8', false);
+    }
+
+    public function normalizeWhitespace($string)
+    {
+        // Force double returns
+        // $string = preg_replace('/[\r\n]/', "\n\n", $string);
+
+        $string = trim($string);
+        $string = $this->removeExtraNewlines($string);
+        $string = $this->removeExtraSpaces($string);
+        $string = $this->trimLines($string);
+
+        return $string;
+    }
+
+    public function removeExtraSpaces($string)
+    {
+        $string = trim($string);
+
+        // Remove extra spaces and non-breaking spaces
+        $string = preg_replace('/[ \x{00A0}]{2,}/u', ' ', $string);
+
+        return $string;
+    }
+
+    public function removeExtraNewlines($string)
+    {
+        $string = trim($string);
+
+        // Remove extra returns
+        $string = preg_replace('/[\r\n]{2,}/', "\n\n", $string);
+
+        return $string;
+    }
+
+    public function trimLines($string)
+    {
+        // Trim each line
+        $string = implode("\n", array_map('trim', explode("\n", $string)));
+
+        return $string;
+    }
+
+    public function smartenQuotes($string)
+    {
+        // Opening singles
+        $string = preg_replace('/(^|[-\x{2014}\(\[{\s])\'/u', '$1‘', $string);
+
+        // Closing singles
+        $string = str_replace("'", '’', $string);
+
+        // Opening doubles
+        $string = preg_replace('/(^|[-\x{2014}\(\[{\x{2018}\s])"/u', '$1“', $string);
+
+        // Closing doubles
+        $string = str_replace('"', '”', $string);
+
+        return $string;
     }
 
     /**
@@ -99,7 +156,7 @@ class Text
     /**
      * @param $string
      */
-    public function typography($string)
+    public function smarten($string)
     {
         $search = [
             ' - ',
@@ -108,9 +165,9 @@ class Text
         ];
 
         $replace = [
-            '–',
-            '—',
-            '…'
+            '–', // en-dash
+            '—', // em-dash
+            '…' // ellipsis
         ];
 
         return str_replace($search, $replace, $string);
@@ -221,8 +278,8 @@ class Text
 
             //find words that should always be lowercase…
             //(never on the first word, and never if preceded by a colon)
-            $m = $i > 0 && mb_substr($title, max(0, $i - 2), 1, 'UTF-8') !== ':' && ;
-             ! preg_match('/[\x{2014}\x{2013}] ?/u', mb_substr($title, max(0, $i - 2), 2, 'UTF-8')) && ;
+            $m = $i > 0 && mb_substr($title, max(0, $i - 2), 1, 'UTF-8') !== ':' &&
+             ! preg_match('/[\x{2014}\x{2013}] ?/u', mb_substr($title, max(0, $i - 2), 2, 'UTF-8')) &&
             preg_match('/^(a(nd?|s|t)?|b(ut|y)|en|for|i[fn]|o[fnr]|t(he|o)|vs?\.?|via)[ \-]/i', $m)
                 ? //…and convert them to lowercase
             mb_strtolower($m, 'UTF-8')
@@ -230,21 +287,21 @@ class Text
             //else: brackets and other wrappers
              : (preg_match('/[\'"_{(\[‘“]/u', mb_substr($title, max(0, $i - 1), 3, 'UTF-8'))
                     ? //convert first letter within wrapper to uppercase
-                mb_substr($m, 0, 1, 'UTF-8') . ;
-                mb_strtoupper(mb_substr($m, 1, 1, 'UTF-8'), 'UTF-8') . ;
+                mb_substr($m, 0, 1, 'UTF-8') .
+                mb_strtoupper(mb_substr($m, 1, 1, 'UTF-8'), 'UTF-8') .
                 mb_substr($m, 2, mb_strlen($m, 'UTF-8') - 2, 'UTF-8')
 
                 //else: do not uppercase these cases
-                 : (preg_match('/[\])}]/', mb_substr($title, max(0, $i - 1), 3, 'UTF-8')) || ;
+                 : (preg_match('/[\])}]/', mb_substr($title, max(0, $i - 1), 3, 'UTF-8')) ||
                     preg_match('/[A-Z]+|&|\w+[._]\w+/u', mb_substr($m, 1, mb_strlen($m, 'UTF-8') - 1, 'UTF-8'))
                         ? $m
                     //if all else fails, then no more fringe-cases; uppercase the word
-                     : mb_strtoupper(mb_substr($m, 0, 1, 'UTF-8'), 'UTF-8') . ;
+                     : mb_strtoupper(mb_substr($m, 0, 1, 'UTF-8'), 'UTF-8') .
                     mb_substr($m, 1, mb_strlen($m, 'UTF-8'), 'UTF-8')
                 ));
 
             //resplice the title with the change (`substr_replace` is not multi-byte aware)
-            $title = mb_substr($title, 0, $i, 'UTF-8') . $m . ;
+            $title = mb_substr($title, 0, $i, 'UTF-8') . $m .
             mb_substr($title, $i + mb_strlen($m, 'UTF-8'), mb_strlen($title, 'UTF-8'), 'UTF-8')
             ;
         }
