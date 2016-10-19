@@ -3,64 +3,52 @@ namespace Nissi\Traits;
 
 trait HasAccessLevel
 {
-    /*
-     * List of roles a user might possess.
-     */
-    protected static $roles = [
-        0  => 'Guest',
-        10 => 'User',
-        20 => 'Contributor',
-        30 => 'Editor',
-        40 => 'Manager',
-        50 => 'Web Administrator',
-        60 => 'System Administrator'
-    ];
-
     /**
-     * Convenience method to retrieve array of roles.
+     * List of roles a user might possess.
+     *
+     * @return array
      */
-    public static function getRoles()
+    public function getRoles()
     {
-        return static::$roles;
+        return [
+            0  => 'Guest',
+            10 => 'User',
+            20 => 'Contributor',
+            30 => 'Editor',
+            40 => 'Manager',
+            50 => 'Web Administrator',
+            60 => 'System Administrator'
+        ];
     }
 
-    /*
-     * The minimum level to be considered an administrator.
+    /**
+     * The name of the attribute which defines a user's "access level".
+     *
+     * @return string
      */
-    protected $adminLevel = 50;
+    public function getLevelAttributeName()
+    {
+        return 'access_level';
+    }
 
     /**
-     * Convenience method to retrieve "admin" level.
+     * The minimum level to be considered an administrator.
+     *
+     * @return int
      */
     public function getAdminLevel()
     {
-        return $this->adminLevel;
+        return 50;
     }
 
-    /*
-     * The minimum level to be considered a system administrator.
-     */
-    protected $sysAdminLevel = 60;
-
     /**
-     * Convenience method to retrieve "sysadmin" level.
+     * The minimum level to be considered a system administrator.
+     *
+     * @return int
      */
     public function getSysAdminLevel()
     {
-        return $this->sysAdminLevel;
-    }
-
-    /*
-     * The name of the attribute which defines a user's "access level".
-     */
-    protected $levelAttribute = 'access_level';
-
-    /*
-     * Convenience method to retrieve access level attribute.
-     */
-    public static function getLevelAttributeName()
-    {
-        return $this->levelAttribute;
+        return 60;
     }
 
     /*
@@ -101,7 +89,7 @@ trait HasAccessLevel
      */
     public function roleName($onErr = 'N/A')
     {
-        $roles = static::getRoles();
+        $roles = $this->getRoles();
         $prop  = $this->getLevelAttributeName();
 
         $userLevel = $this->$prop;
