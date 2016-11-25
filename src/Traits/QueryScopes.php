@@ -18,32 +18,32 @@ trait QueryScopes
 
     public function scopeLatest($query)
     {
-        return $query->orderBy('created_at', 'desc');
+        return $query->orderBy($this::CREATED_AT, 'desc');
     }
 
     public function scopeEarliest($query)
     {
-        return $query->orderBy('created_at', 'asc');
+        return $query->orderBy($this::CREATED_AT, 'asc');
     }
 
     public function scopeCreatedSince($query, $dt)
     {
-        return $query->where('created_at', '>=', Carbon::parse($dt));
+        return $query->where($this::CREATED_AT, '>=', Carbon::parse($dt));
     }
 
     public function scopeCreatedBefore($query, $dt)
     {
-        return $query->where('created_at', '<', Carbon::parse($dt));
+        return $query->where($this::CREATED_AT, '<', Carbon::parse($dt));
     }
 
     public function scopeUpdatedSince($query, $dt)
     {
-        return $query->where('updated_at', '>=', Carbon::parse($dt));
+        return $query->where($this::UPDATED_AT, '>=', Carbon::parse($dt));
     }
 
     public function scopeUpdatedBefore($query, $dt)
     {
-        return $query->where('updated_at', '<', Carbon::parse($dt));
+        return $query->where($this::UPDATED_AT, '<', Carbon::parse($dt));
     }
 
     public function scopeofUser($query, $userId)

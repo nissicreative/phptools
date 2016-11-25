@@ -12,6 +12,8 @@ trait FormatsName
      */
     public function getFormattedName($components = ['first_name', 'last_name'])
     {
+        $props = [];
+
         // Most commonly used components of the name "body"
         $standard = ['first_name', 'nickname', 'middle_name', 'mi', 'last_name'];
 
