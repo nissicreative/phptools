@@ -1,14 +1,19 @@
 <?php
 namespace Nissi\Traits;
 
-use Carbon\Carbon;
 use DB;
+use Carbon\Carbon;
 
 trait QueryScopes
 {
     public function scopeActive($query)
     {
         return $query->where('active', 1);
+    }
+
+    public function scopeInactive($query)
+    {
+        return $query->where('active', 0);
     }
 
     public function scopeRandom($query)
@@ -56,4 +61,45 @@ trait QueryScopes
         return $query->where('type', $type);
     }
 
+    public function scopeSearch($query, $q)
+    {
+        // Query string
+        $q = trim($q);
+
+        if (empty($q)) {
+            return $query;
+        }
+
+        // Sample record so we can get table info
+        $sample = static::first();
+
+        // Search all columns unless a `searchable` array
+        // is defined in the model
+        $allColumns = array_keys($sample->toArray());
+
+        $cols  = array_get($this->searchable, 'columns', $allColumns);
+        $joins = array_get($this->searchable, 'joins', []);
+        $terms = preg_split('~\W+~', $q);
+
+        // Scope SELECT clause to the current model's table,
+        // to avoid ID collisions with joins.
+        $query->select(sprintf('%s.*', $sample->getTable()));
+
+        // Perform joins on related tables
+        foreach ($joins as $table => $keys) {
+            $query->join($table, $keys[0], $keys[1]);
+        }
+
+        // Search through each column for entire query
+        // or individual terms
+        foreach ($cols as $col) {
+            $query->orWhere($col, 'LIKE', "%$q%");
+
+            foreach ($terms as $term) {
+                $query->orWhere($col, 'LIKE', "%$term%");
+            }
+        }
+
+        return $query;
+    }
 }
