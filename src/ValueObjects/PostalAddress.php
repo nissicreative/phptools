@@ -25,4 +25,12 @@ class PostalAddress extends AbstractValueObject
     protected $country;
     protected $lat;
     protected $lng;
+
+    /*
+     * By default, use mailing label when casting to string.
+     */
+    public function __toString()
+    {
+        return $this->getMailingLabel();
+    }
 }
