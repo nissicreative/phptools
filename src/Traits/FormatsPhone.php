@@ -8,6 +8,10 @@ trait FormatsPhone
      */
     public function getPhoneAttribute($val)
     {
+        if (empty($this->attributes['phone'])) {
+            return;
+        }
+
         return format_phone($this->attributes['phone']);
     }
 
@@ -16,6 +20,10 @@ trait FormatsPhone
      */
     public function getFaxAttribute($val)
     {
+        if (empty($this->attributes['fax'])) {
+            return;
+        }
+
         return format_phone($this->attributes['fax']);
     }
 
