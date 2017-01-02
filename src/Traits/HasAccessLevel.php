@@ -53,6 +53,28 @@ trait HasAccessLevel
 
     /*
     |--------------------------------------------------------------------------
+    | Query Scopes
+    |--------------------------------------------------------------------------
+     */
+
+    /*
+     * Admin users
+     */
+    public function scopeAdmins($query)
+    {
+        return $query->where('access_level', '>=', $this->getAdminLevel());
+    }
+
+    /*
+     * System admin users
+     */
+    public function scopeSysadmins($query)
+    {
+        return $query->where('access_level', '>=', $this->getSysAdminLevel());
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | Public Methods
     |--------------------------------------------------------------------------
      */

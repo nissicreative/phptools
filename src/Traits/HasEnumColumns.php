@@ -11,7 +11,7 @@ trait HasEnumColumns
      * @param  string  $column Column name
      * @return array
      */
-    public function getEnumValues($column)
+    public function getEnumValues($column = 'type')
     {
         // Pulls column string from DB
         $enumStr = DB::select(DB::raw('SHOW COLUMNS FROM ' . $this->getTable() . ' WHERE Field = "' . $column . '"'))[0]->Type;

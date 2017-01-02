@@ -16,6 +16,11 @@ trait QueryScopes
         return $query->where('active', 0);
     }
 
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured', 1);
+    }
+
     public function scopeRandom($query)
     {
         return $query->orderBy(DB::raw('RAND()'));
@@ -101,5 +106,10 @@ trait QueryScopes
         }
 
         return $query;
+    }
+
+    public function scopeSorted($query, $direction = 'asc')
+    {
+        return $query->orderBy('position', $direction);
     }
 }
