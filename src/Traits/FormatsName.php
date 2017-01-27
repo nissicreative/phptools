@@ -198,6 +198,28 @@ trait FormatsName
     }
 
     /*
+     * Returns person's initials with separator and appends.
+     */
+    public function getInitials($separator = '', $appends = '', $useMiddle = true)
+    {
+        $arr = [];
+
+        if ($first = $this->getFirstName()) {
+            $arr[] = substr($first, 0, 1);
+        }
+
+        if ($middle = $this->getMiddleName() && $useMiddle) {
+            $arr[] = substr($middle, 0, 1);
+        }
+
+        if ($last = $this->getLastName()) {
+            $arr[] = substr($last, 0, 1);
+        }
+
+        return trim(implode($separator, $arr)) . $appends;
+    }
+
+    /*
     |--------------------------------------------------------------------------
     | Laravel Accessors
     |--------------------------------------------------------------------------

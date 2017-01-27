@@ -1,6 +1,8 @@
 <?php
 namespace Nissi\Traits;
 
+use Nissi\Proxies\Format;
+
 trait FormatsAddress
 {
     /**
@@ -160,6 +162,14 @@ trait FormatsAddress
             return trim($this->street);
         }
 
+        if ( ! empty($this->street1)) {
+            return trim($this->street1);
+        }
+
+        if ( ! empty($this->address1)) {
+            return trim($this->address1);
+        }
+
         if ( ! empty($this->address_1)) {
             return trim($this->address_1);
         }
@@ -174,6 +184,14 @@ trait FormatsAddress
      */
     public function getAddress2()
     {
+        if ( ! empty($this->street2)) {
+            return trim($this->street2);
+        }
+
+        if ( ! empty($this->address2)) {
+            return trim($this->address2);
+        }
+
         if ( ! empty($this->address_2)) {
             return trim($this->address_2);
         }
@@ -184,6 +202,10 @@ trait FormatsAddress
      */
     public function getAddress3()
     {
+        if ( ! empty($this->address3)) {
+            return trim($this->address3);
+        }
+
         if ( ! empty($this->address_3)) {
             return trim($this->address_3);
         }
@@ -217,17 +239,51 @@ trait FormatsAddress
         }
     }
 
-    /**
+    /*
      * ZIP or postal code
      */
-    public function getPostalCode()
+    public function getPostalCode($plusFour = false)
     {
         if ( ! empty($this->zip)) {
-            return trim($this->zip);
+            return Format::zip($this->zip, $plusFour);
         }
 
         if ( ! empty($this->postal_code)) {
             return trim($this->postal_code);
+        }
+    }
+
+    /*
+     * ZIP only
+     */
+    public function getZip($plusFour = false)
+    {
+        if ( ! empty($this->zip)) {
+            return Format::zip($this->zip, $plusFour);
+        }
+    }
+
+    /*
+     * 5-digit ZIP only
+     */
+    public function getZip5()
+    {
+        return $this->getZip();
+    }
+
+    /*
+     * 4-digit ZIP add-on code
+     */
+    public function getZip4()
+    {
+        if ( ! empty($this->zip4)) {
+            return trim($this->zip4);
+        }
+
+        $zip = $this->getZip(true);
+
+        if (strpos($zip, '-') !== false) {
+            return substr($zip, -4);
         }
     }
 

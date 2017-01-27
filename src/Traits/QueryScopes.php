@@ -6,6 +6,12 @@ use Carbon\Carbon;
 
 trait QueryScopes
 {
+    /*
+    |--------------------------------------------------------------------------
+    | WHERE Clauses
+    |--------------------------------------------------------------------------
+     */
+
     public function scopeActive($query)
     {
         return $query->where('active', 1);
@@ -21,21 +27,8 @@ trait QueryScopes
         return $query->where('featured', 1);
     }
 
-    public function scopeRandom($query)
-    {
-        return $query->orderBy(DB::raw('RAND()'));
-    }
-
-    public function scopeLatest($query)
-    {
-        return $query->orderBy($this::CREATED_AT, 'desc');
-    }
-
-    public function scopeEarliest($query)
-    {
-        return $query->orderBy($this::CREATED_AT, 'asc');
-    }
-
+    // Time-based
+    // -------------------------------------------------- //
     public function scopeCreatedSince($query, $dt)
     {
         return $query->where($this::CREATED_AT, '>=', Carbon::parse($dt));
@@ -56,6 +49,18 @@ trait QueryScopes
         return $query->where($this::UPDATED_AT, '<', Carbon::parse($dt));
     }
 
+    public function scopeCreatedOn($query, $dt)
+    {
+        return $query->whereDate($this::CREATED_AT, $dt);
+    }
+
+    public function scopeUpdatedOn($query, $dt)
+    {
+        return $query->whereDate($this::UPDATED_AT, $dt);
+    }
+
+    // Belongs To
+    // -------------------------------------------------- //
     public function scopeofUser($query, $userId)
     {
         return $query->where('user_id', $userId);
@@ -66,6 +71,13 @@ trait QueryScopes
         return $query->where('type', $type);
     }
 
+    public function scopeWhereStatus($query, $status)
+    {
+        return $query->where('status', $status);
+    }
+
+    // Simple Search Query
+    // -------------------------------------------------- //
     public function scopeSearch($query, $q)
     {
         // Query string
@@ -86,13 +98,13 @@ trait QueryScopes
         $joins = array_get($this->searchable, 'joins', []);
         $terms = preg_split('~\W+~', $q);
 
-        // Scope SELECT clause to the current model's table,
+        // Scope the SELECT clause to the current model's table,
         // to avoid ID collisions with joins.
         $query->select(sprintf('%s.*', $sample->getTable()));
 
         // Perform joins on related tables
         foreach ($joins as $table => $keys) {
-            $query->join($table, $keys[0], $keys[1]);
+            $query->leftJoin($table, $keys[0], $keys[1]);
         }
 
         // Search through each column for entire query
@@ -105,7 +117,28 @@ trait QueryScopes
             }
         }
 
-        return $query;
+        return $query->distinct();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ORDER BY Clauses
+    |--------------------------------------------------------------------------
+     */
+
+    public function scopeAscending($query)
+    {
+        return $query->orderBy('id', 'asc');
+    }
+
+    public function scopeDescending($query)
+    {
+        return $query->orderBy('id', 'desc');
+    }
+
+    public function scopeRandom($query)
+    {
+        return $query->orderBy(DB::raw('RAND()'));
     }
 
     public function scopeSorted($query, $direction = 'asc')

@@ -19,9 +19,19 @@ trait HasAvatar
     public function gravatarSrc($size = 40, $default = null)
     {
         $gravatar = new Gravatar();
+
         $gravatar->setEmail($this->email);
         $gravatar->setSize($size);
-        $gravatar->setDefault($default);
+        $gravatar->setDefault($this->getDefaultAvatar());
+
         return $gravatar->getSrc(null, $size);
+    }
+
+    /*
+     * Return URL to default avatar if it exists. NULL otherwise.
+     */
+    public function getDefaultAvatar()
+    {
+        return $this->defaultAvatar ? url($this->defaultAvatar) : null;
     }
 }
