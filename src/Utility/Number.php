@@ -33,6 +33,34 @@ class Number
     }
 
     /**
+     * Formats a value as a percentage.
+     *
+     * @param  float    $amount
+     * @param  integer  $precision
+     * @param  array    $options
+     * @return string
+     */
+    public function percentage($amount, $precision = 0, array $options = [])
+    {
+        $defaults = [
+            'before'    => '',
+            'after'     => '',
+            'thousands' => '',
+            'decimal'   => '.',
+            'zero'      => '0'
+        ];
+
+        $options += $defaults;
+        extract($options);
+
+        if ( ! $amount) {
+            return $zero;
+        }
+
+        return $before . number_format($amount * 100, $precision, $decimal, $thousands) . $after;
+    }
+
+    /**
      * Formats a number as an English string
      *
      * @see http://www.karlrixon.co.uk/writing/convert-numbers-to-words-with-php/
