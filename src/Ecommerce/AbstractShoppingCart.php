@@ -103,6 +103,9 @@ abstract class AbstractShoppingCart implements Iterator, Countable
     |--------------------------------------------------------------------------
      */
 
+    /*
+     * Total price of all items in the cart.
+     */
     public function getSubtotal()
     {
         $subtotal = 0;
@@ -117,24 +120,53 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         return $subtotal;
     }
 
+    /*
+     * Sales tax amount. Implement in derived class.
+     */
     public function getTax($location = null)
     {
         return 0;
     }
 
+    /*
+     * Shipping amount. Implement in derived class.
+     */
     public function getShipping($location = null)
     {
         return 0;
     }
 
+    /*
+     * Total transaction amount.
+     */
     public function getTotal()
     {
         return $this->getSubtotal() + $this->getTax() + $this->getShipping();
     }
 
+    /*
+     * All items currently in cart.
+     *
+     * Returns array
+     */
     public function getItems()
     {
         return $this->items;
+    }
+
+    /*
+     * Returns count of all items in cart, taking into account
+     * the quantity of each item.
+     */
+    public function getItemCount()
+    {
+        $count = 0;
+
+        foreach ($this->items as $id => $data) {
+            $count += $data['qty'];
+        }
+
+        return $count;
     }
 
     /*
