@@ -3,7 +3,7 @@ namespace Nissi\Traits;
 
 trait FormatsPhone
 {
-    /*
+    /**
      * Retrieve the phone attribute.
      */
     public function getPhoneAttribute($val)
@@ -15,7 +15,7 @@ trait FormatsPhone
         return format_phone($this->attributes['phone']);
     }
 
-    /*
+    /**
      * Retrieve the fax attribute.
      */
     public function getFaxAttribute($val)
@@ -27,7 +27,7 @@ trait FormatsPhone
         return format_phone($this->attributes['fax']);
     }
 
-    /*
+    /**
      * Format the phone attribute when setting its value.
      */
     public function setPhoneAttribute($val)
@@ -35,7 +35,7 @@ trait FormatsPhone
         $this->attributes['phone'] = format_phone($val, 'digits');
     }
 
-    /*
+    /**
      * Format the fax attribute when setting its value.
      */
     public function setFaxAttribute($val)

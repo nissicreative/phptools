@@ -33,7 +33,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
     |--------------------------------------------------------------------------
      */
 
-    /*
+    /**
      * Returns a Boolean indicating if the cart is empty.
      */
     public function isEmpty()
@@ -41,7 +41,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         return (empty($this->items));
     }
 
-    /*
+    /**
      * Adds a new item to the cart.
      */
     public function addItem(Orderable $item, $qty = 1)
@@ -58,7 +58,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         }
     }
 
-    /*
+    /**
      * Updates an item's existence/quantity in the cart.
      */
     public function updateItem(Orderable $item, $qty = null)
@@ -76,7 +76,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         }
     }
 
-    /*
+    /**
      * Removes an item from the cart.
      */
     public function deleteItem(Orderable $item)
@@ -103,7 +103,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
     |--------------------------------------------------------------------------
      */
 
-    /*
+    /**
      * Total price of all items in the cart.
      */
     public function getSubtotal()
@@ -120,7 +120,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         return $subtotal;
     }
 
-    /*
+    /**
      * Sales tax amount. Implement in derived class.
      */
     public function getTax($location = null)
@@ -128,7 +128,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         return 0;
     }
 
-    /*
+    /**
      * Shipping amount. Implement in derived class.
      */
     public function getShipping($location = null)
@@ -136,7 +136,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         return 0;
     }
 
-    /*
+    /**
      * Total transaction amount.
      */
     public function getTotal()
@@ -144,7 +144,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         return $this->getSubtotal() + $this->getTax() + $this->getShipping();
     }
 
-    /*
+    /**
      * All items currently in cart.
      *
      * Returns array
@@ -154,7 +154,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         return $this->items;
     }
 
-    /*
+    /**
      * Returns count of all items in cart, taking into account
      * the quantity of each item.
      */
@@ -175,7 +175,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
     |--------------------------------------------------------------------------
      */
 
-    /*
+    /**
      *  Required by Iterator; returns the current value.
      */
     public function current()
@@ -187,7 +187,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         return $this->items[$index];
     }
 
-    /*
+    /**
      * Required by Iterator; returns the current key.
      */
     public function key()
@@ -195,7 +195,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         return $this->position;
     }
 
-    /*
+    /**
      * Required by Iterator; increments the position.
      */
     public function next()
@@ -203,7 +203,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         $this->position++;
     }
 
-    /*
+    /**
      * Required by Iterator; returns the position to the first spot.
      */
     public function rewind()
@@ -211,7 +211,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         $this->position = 0;
     }
 
-    /*
+    /**
      * Required by Iterator; returns a Boolean indiating if a value is indexed at this position.
      */
     public function valid()
@@ -219,7 +219,7 @@ abstract class AbstractShoppingCart implements Iterator, Countable
         return (isset($this->ids[$this->position]));
     }
 
-    /*
+    /**
      * Required by Countable.
      */
     public function count()

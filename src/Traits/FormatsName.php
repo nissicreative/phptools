@@ -53,7 +53,7 @@ trait FormatsName
     |--------------------------------------------------------------------------
      */
 
-    /*
+    /**
      * Returns first/nickname, last, and optional suffix
      */
     public function getName($suffix = false)
@@ -67,7 +67,7 @@ trait FormatsName
         return Format::personName($str);
     }
 
-    /*
+    /**
      * Returns (optional) prefix, first, middle, last, and suffix
      */
     public function getFullName($prefix = false)
@@ -81,7 +81,7 @@ trait FormatsName
         return $this->getFormattedName($components);
     }
 
-    /*
+    /**
      * Returns full name (with prefix) and credentials
      */
     public function getFormalName($separator = ', ')
@@ -101,7 +101,7 @@ trait FormatsName
     |--------------------------------------------------------------------------
      */
 
-    /*
+    /**
      * Returns the prefix: i.e. Dr., Mr., Mrs., if present
      */
     public function getPrefix()
@@ -113,7 +113,7 @@ trait FormatsName
         return Format::personName($this->prefix);
     }
 
-    /*
+    /**
      * Returns the first name, if present
      */
     public function getFirstName()
@@ -125,7 +125,7 @@ trait FormatsName
         return Format::personName($this->first_name);
     }
 
-    /*
+    /**
      * Returns the nickname if present, first name otherwise
      */
     public function getNickname()
@@ -137,7 +137,7 @@ trait FormatsName
         return $this->getFirstName();
     }
 
-    /*
+    /**
      * Returns the middle name, if present
      */
     public function getMiddleName()
@@ -149,7 +149,7 @@ trait FormatsName
         return Format::personName($this->middle_name);
     }
 
-    /*
+    /**
      * Returns the middle initial, if present
      */
     public function getMi()
@@ -161,7 +161,7 @@ trait FormatsName
         return Format::personName($this->mi);
     }
 
-    /*
+    /**
      * Returns the last name, if present
      */
     public function getLastname()
@@ -173,7 +173,7 @@ trait FormatsName
         return Format::personName($this->last_name);
     }
 
-    /*
+    /**
      * Returns the suffix, if present
      */
     public function getSuffix()
@@ -185,7 +185,7 @@ trait FormatsName
         return Format::personName($this->suffix);
     }
 
-    /*
+    /**
      * Returns the credentials: i.e. MBA, JD, PhD, if present
      */
     public function getCredentials()
@@ -197,7 +197,7 @@ trait FormatsName
         return $this->credentials;
     }
 
-    /*
+    /**
      * Returns person's initials with separator and appends.
      */
     public function getInitials($separator = '', $appends = '', $useMiddle = true)
@@ -225,7 +225,7 @@ trait FormatsName
     |--------------------------------------------------------------------------
      */
 
-    /*
+    /**
      * Value to return for $this->name
      */
     public function getNameAttribute()
@@ -233,7 +233,7 @@ trait FormatsName
         return $this->getName();
     }
 
-    /*
+    /**
      * Value to return for $this->fullname
      */
     public function getFullnameAttribute()
@@ -241,7 +241,7 @@ trait FormatsName
         return $this->getFullname();
     }
 
-    /*
+    /**
      * Value to return for $this->formal_name
      */
     public function getFormalNameAttribute()
@@ -249,7 +249,7 @@ trait FormatsName
         return $this->getFormalName();
     }
 
-    /*
+    /**
      * Value to return for $this->nickname
      */
     public function getNicknameAttribute()

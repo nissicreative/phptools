@@ -57,7 +57,7 @@ trait HasAccessLevel
     |--------------------------------------------------------------------------
      */
 
-    /*
+    /**
      * Admin users
      */
     public function scopeAdmins($query)
@@ -65,7 +65,7 @@ trait HasAccessLevel
         return $query->where('access_level', '>=', $this->getAdminLevel());
     }
 
-    /*
+    /**
      * System admin users
      */
     public function scopeSysadmins($query)

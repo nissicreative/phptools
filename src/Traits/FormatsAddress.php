@@ -107,7 +107,7 @@ trait FormatsAddress
     |--------------------------------------------------------------------------
      */
 
-    /*
+    /**
      * Name of person or entity
      */
     public function getRecipient()
@@ -125,7 +125,7 @@ trait FormatsAddress
         }
     }
 
-    /*
+    /**
      * Organization or company name
      */
     public function getOrganization()
@@ -139,7 +139,7 @@ trait FormatsAddress
         }
     }
 
-    /*
+    /**
      * "Attn:" recipient
      */
     public function getAttn()
@@ -153,7 +153,7 @@ trait FormatsAddress
         }
     }
 
-    /*
+    /**
      * Address line 1
      */
     public function getAddress1()
@@ -179,7 +179,7 @@ trait FormatsAddress
         }
     }
 
-    /*
+    /**
      * Address line 2
      */
     public function getAddress2()
@@ -197,7 +197,7 @@ trait FormatsAddress
         }
     }
 
-    /*
+    /**
      * Address line 3
      */
     public function getAddress3()
@@ -211,7 +211,7 @@ trait FormatsAddress
         }
     }
 
-    /*
+    /**
      * City or locality
      */
     public function getLocality()
@@ -225,7 +225,7 @@ trait FormatsAddress
         }
     }
 
-    /*
+    /**
      * State or region
      */
     public function getRegion()
@@ -239,7 +239,7 @@ trait FormatsAddress
         }
     }
 
-    /*
+    /**
      * ZIP or postal code
      */
     public function getPostalCode($plusFour = false)
@@ -253,7 +253,7 @@ trait FormatsAddress
         }
     }
 
-    /*
+    /**
      * ZIP only
      */
     public function getZip($plusFour = false)
@@ -263,7 +263,7 @@ trait FormatsAddress
         }
     }
 
-    /*
+    /**
      * 5-digit ZIP only
      */
     public function getZip5()
@@ -271,7 +271,7 @@ trait FormatsAddress
         return $this->getZip();
     }
 
-    /*
+    /**
      * 4-digit ZIP add-on code
      */
     public function getZip4()
@@ -287,7 +287,7 @@ trait FormatsAddress
         }
     }
 
-    /*
+    /**
      * Country
      */
     public function getCountry()

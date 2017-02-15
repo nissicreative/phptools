@@ -22,7 +22,7 @@ class EloquentCsv
         $this->build();
     }
 
-    /*
+    /**
      * Build the CSV.
      */
     public function build()
@@ -31,7 +31,7 @@ class EloquentCsv
         $this->insertRows();
     }
 
-    /*
+    /**
      * Create header row if applicable.
      */
     public function addHeadings()
@@ -49,7 +49,7 @@ class EloquentCsv
         $this->writer->insertOne($headings);
     }
 
-    /*
+    /**
      * Insert row for each record.
      */
     public function insertRows()
@@ -67,7 +67,7 @@ class EloquentCsv
         }
     }
 
-    /*
+    /**
      * Force-download CSV.
      */
     public function output($filename = 'export.csv')
@@ -75,7 +75,7 @@ class EloquentCsv
         $this->writer->output($filename);
     }
 
-    /*
+    /**
      * Return HTML string with class name.
      */
     public function toHtml($className = 'table')
@@ -83,7 +83,7 @@ class EloquentCsv
         return $this->writer->toHTML($className);
     }
 
-    /*
+    /**
      * Return string representation of CSV file.
      */
     public function __toString()

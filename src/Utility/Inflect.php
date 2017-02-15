@@ -1,5 +1,4 @@
 <?php
-
 namespace Nissi\Utility;
 
 /**
@@ -114,6 +113,9 @@ class Inflect
         return $string;
     }
 
+    /**
+     * Return the singular variant of a plural noun.
+     */
     public function singularize($string = '')
     {
         // save some time in the case that singular and plural are the same
@@ -142,6 +144,9 @@ class Inflect
         return $string;
     }
 
+    /**
+     * Pluralize a noun if the count is not one.
+     */
     public function pluralizeIf($string = '', $count = 0, $includeCount = true)
     {
         $out = '';
