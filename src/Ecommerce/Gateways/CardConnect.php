@@ -29,7 +29,7 @@ class CardConnect
         ]);
     }
 
-    /*
+    /**
      * Test the gateway credentials.
      */
     public function test()
@@ -37,7 +37,7 @@ class CardConnect
         return $this->client->request('GET');
     }
 
-    /*
+    /**
      * Authorize transaction.
      */
     public function authorize($requestData = [])
@@ -60,10 +60,34 @@ class CardConnect
 
         $responseBody = (string) $res->getBody(); // JSON String
 
-        return $responseBody;
+        return json_decode($responseBody);
     }
 
-    /*
+    /**
+     * Add a new customer profile.
+     */
+    public function createProfile($requestData = [])
+    {
+        $defaults = [
+            'defaultacct' => 'Y'
+        ];
+
+        $requestData += $defaults;
+
+        $requestBody = json_encode($requestData);
+
+        $request = new Request('PUT', $this->baseUri . 'profile');
+
+        $res = $this->client->send($request, [
+            'body' => $requestBody
+        ]);
+
+        $responseBody = (string) $res->getBody(); // JSON String
+
+        return json_decode($responseBody);
+    }
+
+    /**
      * Format an expiry date.
      */
     public static function formatExpiry($year = 0, $month = 0, $format = 'my')
