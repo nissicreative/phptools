@@ -71,7 +71,7 @@ trait QueryScopes
         return $query->where('type', $type);
     }
 
-    public function scopeWhereStatus($query, $status)
+    public function scopeWithStatus($query, $status)
     {
         return $query->where('status', $status);
     }
@@ -90,12 +90,14 @@ trait QueryScopes
         // Sample record so we can get table info
         $sample = static::first();
 
-        // Search all columns unless a `searchable` array
-        // is defined in the model
-        $allColumns = array_keys($sample->toArray());
+        // Search all columns unless a `searchable` array is defined in the model
+        $defaultColumns = array_keys($sample->toArray());
+        $searchColumns  = collect(array_get($this->searchable, 'columns', $defaultColumns));
 
-        $cols  = array_get($this->searchable, 'columns', $allColumns);
+        // Use joins if provided in `searchable` array; if not, an empty array
         $joins = array_get($this->searchable, 'joins', []);
+
+        // Split the search into tokens
         $terms = preg_split('~\W+~', $q);
 
         // Scope the SELECT clause to the current model's table,
@@ -107,24 +109,62 @@ trait QueryScopes
             $query->leftJoin($table, $keys[0], $keys[1]);
         }
 
-        // Search through each column for entire query
-        // or individual terms
-        foreach ($cols as $col) {
-            $query->orWhere($col, 'LIKE', "%$q%");
+        // Additional constraints to be passed as "where" clauses
+        $constraints = array_get($this->searchable, 'constraints', []);
 
-            foreach ($terms as $term) {
-                $query->orWhere($col, 'LIKE', "%$term%");
-            }
+        foreach ($constraints as $column => $constraint) {
+            list($operator, $value) = $constraint;
+            $query->where($column, $operator, $value);
         }
 
+        // Collection to hold column names
+        $collection = collect([]);
+
+        $searchColumns->each(function ($searchColumn) use (&$collection) {
+            if (ends_with($searchColumn, '*')) {
+                // "Wildcard" searches like 'users.*'
+                $table = explode('.', $searchColumn)[0];
+
+                // Build a "smart" list of search columns
+                $columns = collect($this->getConnection()->getSchemaBuilder()->getColumnListing($table))
+                ->reject(function ($column) {
+                    return in_array($column, ['id', 'password', 'remember_token'])
+                    || ends_with($column, '_id')
+                    || ends_with($column, '_at')
+                    || ends_with($column, '_on');
+                })->map(function ($column) use ($table) {
+                    return sprintf('`%s`.`%s`', trim($table, '`'), $column);
+                });
+
+                $collection = $collection->merge($columns);
+            } elseif (str_contains($searchColumn, ',')) {
+                // Comma-separated columns; i.e. "users.first_name, last_name, email"
+                list($table, $columns) = explode('.', $searchColumn);
+
+                $columns = collect(preg_split('/,\s*/', $columns))
+                ->map(function ($column) use ($table) {
+                    return sprintf('`%s`.`%s`', trim($table, '`'), trim($column));
+                });
+
+                $collection = $collection->merge($columns);
+            } else {
+                // Explicit column name provided
+                $collection = $collection->merge($searchColumn);
+            }
+        });
+
+        // Prepare a CONCAT_WS statement
+        $concatenated = $collection->implode(', ');
+
+        // Search through all requested columns for each token
+        foreach ($terms as $term) {
+            $term = trim($this->getConnection()->getPdo()->quote($term), "'");
+            $query->whereRaw("CONCAT_WS('', {$concatenated}) LIKE '%$term%'");
+        }
+
+        // Avoid duplicate records
         return $query->distinct();
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | ORDER BY Clauses
-    |--------------------------------------------------------------------------
-     */
 
     public function scopeAscending($query)
     {
