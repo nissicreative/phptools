@@ -61,7 +61,7 @@ class Number
     }
 
     /**
-     * Formats a number as an English string
+     * Formats a number as an English string.
      *
      * @see http://www.karlrixon.co.uk/writing/convert-numbers-to-words-with-php/
      *
@@ -177,5 +177,23 @@ class Number
         }
 
         return $string;
+    }
+
+    /**
+     * Formats a number as an ordinal.
+     *
+     * @param  mixed    $number
+     * @return string
+     */
+    public function ordinal($number)
+    {
+        $number = (int) $number;
+        $ends   = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
+
+        if ((($number % 100) >= 11) && (($number % 100) <= 13)) {
+            return $number . 'th';
+        } else {
+            return $number . $ends[$number % 10];
+        }
     }
 }
