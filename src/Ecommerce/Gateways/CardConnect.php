@@ -24,8 +24,8 @@ class CardConnect
             'base_uri' => $url . '/cardconnect/rest/',
             'headers'  => [
                 'Content-Type'  => 'application/json',
-                'Authorization' => $this->authstring
-            ]
+                'Authorization' => $this->authstring,
+            ],
         ]);
     }
 
@@ -45,7 +45,7 @@ class CardConnect
         $defaults = [
             'currency' => 'USD',
             'country'  => 'US',
-            'tokenize' => 'Y'
+            'tokenize' => 'Y',
         ];
 
         $requestData += $defaults;
@@ -55,7 +55,7 @@ class CardConnect
         $request = new Request('PUT', $this->baseUri . 'auth');
 
         $res = $this->client->send($request, [
-            'body' => $requestBody
+            'body' => $requestBody,
         ]);
 
         $responseBody = (string) $res->getBody(); // JSON String
@@ -69,7 +69,8 @@ class CardConnect
     public function createProfile($requestData = [])
     {
         $defaults = [
-            'defaultacct' => 'Y'
+            'profileupdate' => 'N',
+            'defaultacct'   => 'Y',
         ];
 
         $requestData += $defaults;
@@ -79,7 +80,29 @@ class CardConnect
         $request = new Request('PUT', $this->baseUri . 'profile');
 
         $res = $this->client->send($request, [
-            'body' => $requestBody
+            'body' => $requestBody,
+        ]);
+
+        $responseBody = (string) $res->getBody(); // JSON String
+
+        return json_decode($responseBody);
+    }
+
+    /**
+     * Request a refund.
+     */
+    public function refund($requestData = [])
+    {
+        $defaults = [];
+
+        $requestData += $defaults;
+
+        $requestBody = json_encode($requestData);
+
+        $request = new Request('PUT', $this->baseUri . 'refund');
+
+        $res = $this->client->send($request, [
+            'body' => $requestBody,
         ]);
 
         $responseBody = (string) $res->getBody(); // JSON String

@@ -1,18 +1,10 @@
 <?php
 namespace Nissi\Traits;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 
 trait DisplaysVideo
 {
-    protected $client;
-
-    public function __construct(ClientInterface $client = null)
-    {
-        $this->client = $client ?: new Client();
-    }
-
     /*
     |--------------------------------------------------------------------------
     | YouTube
@@ -56,6 +48,9 @@ trait DisplaysVideo
     |--------------------------------------------------------------------------
      */
 
+    /**
+     * Extract the Vimeo ID from a URL
+     */
     public function getVimeoId($url)
     {
         if ( ! preg_match('%(?:player\.)?vimeo\.com/(?:[a-z]*/)*([0-9]{6,11})%i', $url, $match)) {
@@ -65,9 +60,12 @@ trait DisplaysVideo
         return $match[1];
     }
 
-    public function getVimeoJson($videoUrl, $debug = false)
+    /**
+     * Retrieve JSON from the Vimeo oEmbed service.
+     */
+    public function getVimeoJson($videoUrl)
     {
-        $client = $this->client;
+        $client = app(ClientInterface::class);
 
         $response = $client->request('GET', 'https://vimeo.com/api/oembed.json', [
             'query' => ['url' => $videoUrl]
@@ -76,6 +74,9 @@ trait DisplaysVideo
         return (string) $response->getBody();
     }
 
+    /**
+     * Calculate a formatted URL suitable for using as an embedded video.
+     */
     public function getVimeoEmbedUrl($url, $opts = null, $scheme = '')
     {
         $qs = (is_array($opts)) ? http_build_query($opts) : rtrim($opts, '?');
@@ -87,6 +88,9 @@ trait DisplaysVideo
         return $scheme . '//player.vimeo.com/video/' . $videoId . '?' . $qs;
     }
 
+    /**
+     * Get the URL of a video's thumbnail image.
+     */
     public function getVimeoThumbnailUrl($videoUrl)
     {
         $json = $this->getVimeoJson($videoUrl);

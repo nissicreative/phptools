@@ -113,7 +113,8 @@ trait FormatsAddress
     public function getRecipient()
     {
         if (method_exists($this, 'getName')) {
-            return $this->getName();
+            if ($name = trim($this->getName()))
+            return $name;
         }
 
         if ( ! empty($this->name)) {
@@ -121,7 +122,7 @@ trait FormatsAddress
         }
 
         if ( ! empty($this->first_name) &&  ! empty($this->last_name)) {
-            return $this->first_name . ' ' . $this->last_name;
+            return trim($this->first_name . ' ' . $this->last_name);
         }
     }
 

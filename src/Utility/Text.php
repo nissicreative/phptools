@@ -8,7 +8,7 @@ class Text
      */
     public function entities($string)
     {
-        $string = self::convertWindows1252(trim($string));
+        $string = $this->convertWindows1252(trim($string));
         $string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
 
         if (defined('ENT_SUBSTITUTE')) {
@@ -24,7 +24,7 @@ class Text
      */
     public function specialchars($string)
     {
-        $string = self::convertWindows1252(trim($string));
+        $string = $this->convertWindows1252(trim($string));
         $string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
 
         return htmlspecialchars($string, ENT_QUOTES, 'UTF-8', false);
@@ -123,7 +123,7 @@ class Text
             $sb . '\x98/', // Tilde
             $sb . '\x99/', // Trademark
             $sb . '\x9B/', // Right Single Angle Quote
-            $sb . '\xA0/' // Non-breaking Space
+            $sb . '\xA0/', // Non-breaking Space
         ];
 
         $replace = [
@@ -147,7 +147,7 @@ class Text
             '&tilde;',
             '&trade;',
             '&rsaquo;',
-            '&nbsp;'
+            '&nbsp;',
         ];
 
         return preg_replace($search, $replace, $string);
@@ -161,13 +161,13 @@ class Text
         $search = [
             ' - ',
             '--',
-            '...'
+            '...',
         ];
 
         $replace = [
             '–', // en-dash
             '—', // em-dash
-            '…' // ellipsis
+            '…', // ellipsis
         ];
 
         return str_replace($search, $replace, $string);
@@ -183,17 +183,17 @@ class Text
         $defaults = [
             'ellipsis'    => '...',
             'exact'       => true,
-            'punctuation' => '.!?:;,-'
+            'punctuation' => '.!?:;,-',
         ];
 
         $options += $defaults;
         extract($options);
 
-        $text = self::entities($text);
+        $text = $this->entities($text);
         $text = strip_tags(html_entity_decode($text, ENT_QUOTES, 'UTF-8'));
 
         if (strlen($text) <= $length) {
-            return self::specialchars($text);
+            return $this->specialchars($text);
         }
 
         $text = substr($text, 0, $length);
@@ -204,36 +204,31 @@ class Text
 
         $text = (strspn(strrev($text), $punctuation) != 0) ? substr($text, 0, -strspn(strrev($text), $punctuation)) : $text;
 
-        return self::specialchars($text) . $ellipsis;
+        return $this->specialchars($text) . $ellipsis;
     }
 
     /**
-     * @param  $text
-     * @param  $length
-     * @param  $options
-     * @return mixed
+     * @param  $text       String to transform
+     * @param  $length     Desired length of
+     * @param  $separator  Characters to use in middle
+     * @return string
      */
-    public function mtruncate($text, $length = 20, array $options = [])
+    public function mtruncate($text, $length = 20, $separator = '…')
     {
-        $defaults = [
-            'ellipsis'   => '...',
-            'exact'      => true,
-            'puntuation' => '.!?:;,-'
-        ];
+        $text       = strip_tags(html_entity_decode($this->entities($text), ENT_QUOTES, 'UTF-8'));
+        $textLength = strlen($text);
 
-        $options += $defaults;
-        extract($options);
-
-        $text = self::entities($text);
-        $text = strip_tags(html_entity_decode($text, ENT_QUOTES, 'UTF-8'));
-
-        if (strlen($text) <= $length) {
-            return self::specialchars($text);
+        if ($textLength <= $length) {
+            return $this->specialchars($text);
         }
 
-        $first_part  = self::truncate($text, $length / 2, compact($options));
-        $second_part = strrev(self::truncate(strrev($text), $length / 2, compact($options)));
-        return $first_part . $ellipsis . $second_part;
+        $ellipsesLength = strlen($separator);
+
+        $firstPart  = substr($text, 0, ceil($length / 2) - floor($ellipsesLength / 2));
+
+        $secondPart = strrev(substr(strrev($text), 0, floor($length / 2) - ceil($ellipsesLength / 2)));
+
+        return $this->specialchars($firstPart . $separator . $secondPart);
     }
 
     //! Case Conversions
@@ -244,9 +239,9 @@ class Text
     public function capitalize($string)
     {
         if ($string != mb_convert_case($string, MB_CASE_LOWER) && $string != mb_convert_case($string, MB_CASE_UPPER)) {
-            return self::specialchars($string);
+            return $this->specialchars($string);
         } else {
-            return self::specialchars(mb_convert_case($string, MB_CASE_TITLE));
+            return $this->specialchars(mb_convert_case($string, MB_CASE_TITLE));
         }
     }
 
@@ -279,7 +274,7 @@ class Text
             //find words that should always be lowercase…
             //(never on the first word, and never if preceded by a colon)
             $m = $i > 0 && mb_substr($title, max(0, $i - 2), 1, 'UTF-8') !== ':' &&
-             ! preg_match('/[\x{2014}\x{2013}] ?/u', mb_substr($title, max(0, $i - 2), 2, 'UTF-8')) &&
+            ! preg_match('/[\x{2014}\x{2013}] ?/u', mb_substr($title, max(0, $i - 2), 2, 'UTF-8')) &&
             preg_match('/^(a(nd?|s|t)?|b(ut|y)|en|for|i[fn]|o[fnr]|t(he|o)|vs?\.?|via)[ \-]/i', $m)
                 ? //…and convert them to lowercase
             mb_strtolower($m, 'UTF-8')
@@ -326,7 +321,7 @@ class Text
             $output_string .= ($key & 1) == 0 ? ucfirst(strtolower(trim($sentence))) : $sentence . ' ';
         }
 
-        return self::specialchars(trim($output_string));
+        return $this->specialchars(trim($output_string));
     }
 
 }
