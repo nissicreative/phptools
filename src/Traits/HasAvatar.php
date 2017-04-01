@@ -5,6 +5,8 @@ use Nissi\ValueObjects\Gravatar;
 
 trait HasAvatar
 {
+    protected $defaultAvatar;
+
     /**
      * Defer to Gravatar image if not overridden.
      */
@@ -22,7 +24,7 @@ trait HasAvatar
 
         $gravatar->setEmail($this->email);
         $gravatar->setSize($size);
-        $gravatar->setDefault($this->getDefaultAvatar());
+        $gravatar->setDefault($default ?? $this->getDefaultAvatar());
 
         return $gravatar->getSrc(null, $size);
     }
@@ -33,5 +35,13 @@ trait HasAvatar
     public function getDefaultAvatar()
     {
         return $this->defaultAvatar ? url($this->defaultAvatar) : null;
+    }
+
+    /**
+     * Set the URL of the default avatar.
+     */
+    public function setDefaultAvatar($val)
+    {
+        $this->defaultAvatar = $val;
     }
 }
