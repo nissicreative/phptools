@@ -1,12 +1,11 @@
 <?php
+
 namespace Nissi\Traits;
 
 use Nissi\ValueObjects\Gravatar;
 
 trait HasAvatar
 {
-    protected $defaultAvatar;
-
     /**
      * Defer to Gravatar image if not overridden.
      */
@@ -37,11 +36,4 @@ trait HasAvatar
         return $this->defaultAvatar ? url($this->defaultAvatar) : null;
     }
 
-    /**
-     * Set the URL of the default avatar.
-     */
-    public function setDefaultAvatar($val)
-    {
-        $this->defaultAvatar = $val;
-    }
 }

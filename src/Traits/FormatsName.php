@@ -1,4 +1,5 @@
 <?php
+
 namespace Nissi\Traits;
 
 use Nissi\Proxies\Format;
@@ -182,7 +183,7 @@ trait FormatsName
             return '';
         }
 
-        return Format::personName($this->suffix);
+        return trim($this->suffix);
     }
 
     /**
