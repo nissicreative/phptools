@@ -18,7 +18,10 @@ trait SanitizesInput
         return collect($inputArray)
             ->map(function ($value, $key) use ($dates) {
                 if (is_array($value)) {
-                    return true;
+                    array_walk_recursive($value, function (&$val) {
+                        $val = trim($val);
+                    });
+                    return $value;
                 }
 
                 $trimmed = trim($value);
