@@ -14,7 +14,7 @@ class Format
             'require_area_code' => true,
             'area_code'         => null,
             'ext'               => '',
-            'ext_separator'     => ' x'
+            'ext_separator'     => ' x',
         ];
 
         $options += $defaults;
@@ -45,22 +45,22 @@ class Format
         }
 
         switch ($format) {
-            case 'parentheses':    // (###) ###-####
+            case 'parentheses': // (###) ###-####
                 $output = ($area) ? "({$area}) " : '';
                 $output .= "{$exchange}-{$subscriber}{$extension}";
                 break;
-            case 'dashes':    // ###-###-####
+            case 'dashes': // ###-###-####
                 $output = ($area) ? "{$area}-" : '';
                 $output .= "{$exchange}-{$subscriber}{$extension}";
                 break;
-            case 'dots':    // ###.###.####
+            case 'dots': // ###.###.####
                 $output = ($area) ? "{$area}." : '';
                 $output .= "{$exchange}.{$subscriber}{$extension}";
                 break;
-            case 'digits':    // ##########
+            case 'digits': // ##########
                 $output = "{$area}{$exchange}{$subscriber}{$extension}";
                 break;
-            case 'intl':// +1##########
+            case 'intl': // +1##########
             default:
                 $output = "+1{$area}{$exchange}{$subscriber}{$extension}";
         }
@@ -108,7 +108,7 @@ class Format
             'use_hostname' => true,
             'use_path'     => true,
             'use_query'    => false,
-            'use_fragment' => false
+            'use_fragment' => false,
         ];
 
         $options += $defaults;
@@ -139,15 +139,15 @@ class Format
 
         $str .= strtolower($host);
 
-        if ($use_path &&  ! empty($path)) {
+        if ($use_path && ! empty($path)) {
             $str .= $path;
         }
 
-        if ($use_query &&  ! empty($query)) {
+        if ($use_query && ! empty($query)) {
             $str .= "?$query";
         }
 
-        if ($use_fragment &&  ! empty($fragment)) {
+        if ($use_fragment && ! empty($fragment)) {
             $str .= $fragment;
         }
 
@@ -219,5 +219,29 @@ class Format
         }
 
         return $string;
+    }
+
+    /**
+     * Format a social security number.
+     *
+     * @param  string $string
+     * @param  string $separator
+     * @return string|false
+     */
+    public function ssn($string, $separator = '-')
+    {
+        $digits = preg_replace('/\D/', '', $string);
+
+        if (strlen($digits) !== 9) {
+            return false;
+        }
+
+        return sprintf('%s%s%s%s%s',
+            substr($digits, 0, 3),
+            $separator,
+            substr($digits, 3, 2),
+            $separator,
+            substr($digits, -4)
+        );
     }
 }
