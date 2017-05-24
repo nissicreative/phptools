@@ -27,6 +27,12 @@ class PostalAddress extends AbstractValueObject
     protected $address_1;
     protected $address_2;
     protected $address_3;
+    protected $line1;
+    protected $line2;
+    protected $line3;
+    protected $line_1;
+    protected $line_2;
+    protected $line_3;
     protected $city;
     protected $locality;
     protected $state;

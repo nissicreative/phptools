@@ -15,7 +15,7 @@ trait FormatsAddress
         $defaults = [
             'display_country'      => false,
             'separator'            => '<br />',
-            'city_state_separator' => ', '
+            'city_state_separator' => ', ',
         ];
 
         $options += $defaults;
@@ -50,7 +50,7 @@ trait FormatsAddress
         $defaults = [
             'display_country'      => false,
             'separator'            => '<br />',
-            'city_state_separator' => ', '
+            'city_state_separator' => ', ',
         ];
 
         $options += $defaults;
@@ -113,15 +113,17 @@ trait FormatsAddress
     public function getRecipient()
     {
         if (method_exists($this, 'getName')) {
-            if ($name = trim($this->getName()))
-            return $name;
+            if ($name = trim($this->getName())) {
+                return $name;
+            }
+
         }
 
         if ( ! empty($this->name)) {
             return trim($this->name);
         }
 
-        if ( ! empty($this->first_name) &&  ! empty($this->last_name)) {
+        if ( ! empty($this->first_name) && ! empty($this->last_name)) {
             return trim($this->first_name . ' ' . $this->last_name);
         }
     }
@@ -167,6 +169,14 @@ trait FormatsAddress
             return trim($this->street1);
         }
 
+        if ( ! empty($this->line1)) {
+            return trim($this->line1);
+        }
+
+        if ( ! empty($this->line_1)) {
+            return trim($this->line_1);
+        }
+
         if ( ! empty($this->address1)) {
             return trim($this->address1);
         }
@@ -187,6 +197,14 @@ trait FormatsAddress
     {
         if ( ! empty($this->street2)) {
             return trim($this->street2);
+        }
+
+        if ( ! empty($this->line2)) {
+            return trim($this->line2);
+        }
+
+        if ( ! empty($this->line_2)) {
+            return trim($this->line_2);
         }
 
         if ( ! empty($this->address2)) {
