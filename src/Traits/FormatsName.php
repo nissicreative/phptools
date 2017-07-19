@@ -235,6 +235,22 @@ trait FormatsName
     }
 
     /**
+     * Formatted First Name.
+     */
+    public function getFirstNameAttribute($val)
+    {
+        return Format::personName($val);
+    }
+
+    /**
+     * Formatted Last Name.
+     */
+    public function getLastNameAttribute($val)
+    {
+        return Format::personName($val);
+    }
+
+    /**
      * Value to return for $this->fullname
      */
     public function getFullnameAttribute()

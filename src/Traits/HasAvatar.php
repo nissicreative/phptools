@@ -35,5 +35,4 @@ trait HasAvatar
     {
         return $this->defaultAvatar ? url($this->defaultAvatar) : null;
     }
-
 }
