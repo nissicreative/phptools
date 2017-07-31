@@ -30,7 +30,7 @@ trait SanitizesInput
                     return $date;
                 }
 
-                return $trimmed ?: null;
+                return $trimmed ?? null;
             })
             ->toArray();
     }
