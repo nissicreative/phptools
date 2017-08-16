@@ -231,6 +231,10 @@ trait FormatsName
      */
     public function getNameAttribute()
     {
+        if ( ! empty($this->attributes['name'])) {
+            return Format::personName(trim($this->attributes['name']));
+        }
+
         return $this->getName();
     }
 

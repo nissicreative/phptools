@@ -17,8 +17,23 @@ trait HasAccessLevel
             30 => 'Editor',
             40 => 'Manager',
             50 => 'Web Administrator',
-            60 => 'System Administrator'
+            60 => 'System Administrator',
         ];
+    }
+
+    /**
+     * Only the roles that are less than or equal to the authenticated user.
+     */
+    public function getEditableRoles()
+    {
+        if (auth()->guest()) {
+            return [];
+        }
+
+        return collect($this->getRoles())
+            ->filter(function ($role, $level) {
+                return $level <= auth()->user()->access_level;
+            });
     }
 
     /**
@@ -32,13 +47,13 @@ trait HasAccessLevel
     }
 
     /**
-     * The minimum level to be considered an administrator.
+     * The minimum level to access the admin panel.
      *
      * @return int
      */
     public function getAdminLevel()
     {
-        return 50;
+        return 40;
     }
 
     /**
@@ -58,7 +73,7 @@ trait HasAccessLevel
      */
 
     /**
-     * Admin users
+     * Admin users (i.e. can log into panel).
      */
     public function scopeAdmins($query)
     {
@@ -66,7 +81,7 @@ trait HasAccessLevel
     }
 
     /**
-     * System admin users
+     * System admin users.
      */
     public function scopeSysadmins($query)
     {
@@ -123,5 +138,13 @@ trait HasAccessLevel
         }
 
         return $onErr;
+    }
+
+    /**
+     * Accessor method for outputting a user's role.
+     */
+    public function getRoleAttribute()
+    {
+        return $this->roleName();
     }
 }
