@@ -3,6 +3,7 @@ namespace Nissi\Traits;
 
 use DB;
 use Carbon\Carbon;
+use Nissi\Database\QueryFilters;
 
 trait QueryScopes
 {
@@ -127,12 +128,12 @@ trait QueryScopes
 
                 // Build a "smart" list of search columns
                 $columns = collect($this->getConnection()->getSchemaBuilder()->getColumnListing($table))
-                ->reject(function ($column) {
-                    return in_array($column, ['id', 'password', 'remember_token'])
-                    || ends_with($column, '_id')
-                    || ends_with($column, '_at')
-                    || ends_with($column, '_on');
-                })->map(function ($column) use ($table) {
+                    ->reject(function ($column) {
+                        return in_array($column, ['id', 'password', 'remember_token'])
+                        || ends_with($column, '_id')
+                        || ends_with($column, '_at')
+                        || ends_with($column, '_on');
+                    })->map(function ($column) use ($table) {
                     return sprintf('`%s`.`%s`', trim($table, '`'), $column);
                 });
 
@@ -142,9 +143,9 @@ trait QueryScopes
                 list($table, $columns) = explode('.', $searchColumn);
 
                 $columns = collect(preg_split('/,\s*/', $columns))
-                ->map(function ($column) use ($table) {
-                    return sprintf('`%s`.`%s`', trim($table, '`'), trim($column));
-                });
+                    ->map(function ($column) use ($table) {
+                        return sprintf('`%s`.`%s`', trim($table, '`'), trim($column));
+                    });
 
                 $collection = $collection->merge($columns);
             } else {
@@ -166,6 +167,12 @@ trait QueryScopes
         return $query->distinct();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | ORDER BY Clauses
+    |--------------------------------------------------------------------------
+     */
+
     public function scopeAscending($query)
     {
         return $query->orderBy('id', 'asc');
@@ -184,5 +191,16 @@ trait QueryScopes
     public function scopeSorted($query, $direction = 'asc')
     {
         return $query->orderBy('position', $direction);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Filters
+    |--------------------------------------------------------------------------
+     */
+
+    public function scopeFilter($query, QueryFilters $filters)
+    {
+        return $filters->apply($query);
     }
 }
