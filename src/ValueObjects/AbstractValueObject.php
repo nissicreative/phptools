@@ -15,4 +15,12 @@ abstract class AbstractValueObject
             }
         }
     }
+
+    /**
+     * Static factory method.
+     */
+    public static function create(array $data = [])
+    {
+        return new static($data);
+    }
 }
