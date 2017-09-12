@@ -35,7 +35,7 @@ trait FormatsAddress
             $lines[] = 'Attn: ' . $this->getAttn();
         }
 
-        $lines[] = $this->getAddress(compact($options));
+        $lines[] = $this->getAddress($options);
 
         return trim(implode($separator, $lines));
     }
