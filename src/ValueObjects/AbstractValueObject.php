@@ -23,4 +23,32 @@ abstract class AbstractValueObject
     {
         return new static($data);
     }
+
+    /**
+     * Return properties as an array.
+     */
+    public function toArray($options = null)
+    {
+        // Pass in an array of property names to get only those properties.
+        if (is_array($options)) {
+            return collect(get_object_vars($this))
+                ->filter(function ($val, $key) use ($options) {
+                    return in_array($key, $options);
+                })
+                ->toArray();
+        }
+
+        // Pass in a "truthy" value to get all properties.
+        if ($options) {
+            return get_object_vars($this);
+        }
+
+        // Default to returning only non-null values.
+        return collect(get_object_vars($this))
+            ->reject(function ($var) {
+                return is_null($var);
+            })
+            ->toArray();
+    }
+
 }

@@ -15,6 +15,7 @@ class PostalAddress extends AbstractValueObject
     protected $attn;
     protected $company;
     protected $organization;
+    protected $facility;
     protected $street;
     protected $street1;
     protected $street2;

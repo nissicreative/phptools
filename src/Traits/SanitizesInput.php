@@ -26,8 +26,8 @@ trait SanitizesInput
 
                 $trimmed = trim($value);
 
-                if (in_array($key, $dates) && $date = make_date($trimmed)) {
-                    return $date;
+                if (in_array($key, $dates)) {
+                    return make_date($trimmed);
                 }
 
                 return $trimmed ?? null;

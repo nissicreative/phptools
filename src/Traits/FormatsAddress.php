@@ -140,6 +140,10 @@ trait FormatsAddress
         if ( ! empty($this->company)) {
             return trim($this->company);
         }
+
+        if ( ! empty($this->facility)) {
+            return trim($this->facility);
+        }
     }
 
     /**
