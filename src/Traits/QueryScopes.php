@@ -89,7 +89,7 @@ trait QueryScopes
         }
 
         // Sample record so we can get table info
-        $sample = static::first();
+        $sample = static::first() ?: new static();
 
         // Search all columns unless a `searchable` array is defined in the model
         $defaultColumns = array_keys($sample->toArray());
