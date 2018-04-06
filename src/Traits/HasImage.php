@@ -9,9 +9,13 @@ trait HasImage
     /**
      * The URL of the cached image.
      */
-    public function imgSrc($size = 'full')
+    public function imgSrc($size = 'full', $default = null)
     {
         $attribute = $this->getImagePathAttributeName();
+
+        if ( ! $this->$attribute) {
+            return $default;
+        }
 
         return sprintf(
             '/%s/%s/%s',

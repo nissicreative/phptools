@@ -21,7 +21,7 @@ trait HasAvatar
     {
         $gravatar = new Gravatar();
 
-        $gravatar->setEmail($this->email);
+        $gravatar->setEmail($this->email ?? 'test@example.com');
         $gravatar->setSize($size);
         $gravatar->setDefault($default ?? $this->getDefaultAvatar());
 
