@@ -1,7 +1,6 @@
 <?php
 namespace Nissi\Traits;
 
-use DB;
 use Carbon\Carbon;
 use Nissi\Database\QueryFilters;
 
@@ -58,23 +57,6 @@ trait QueryScopes
     public function scopeUpdatedOn($query, $dt)
     {
         return $query->whereDate($this::UPDATED_AT, $dt);
-    }
-
-    // Belongs To
-    // -------------------------------------------------- //
-    public function scopeofUser($query, $userId)
-    {
-        return $query->where('user_id', $userId);
-    }
-
-    public function scopeOfType($query, $type)
-    {
-        return $query->where('type', $type);
-    }
-
-    public function scopeWithStatus($query, $status)
-    {
-        return $query->where('status', $status);
     }
 
     // Simple Search Query
@@ -181,16 +163,6 @@ trait QueryScopes
     public function scopeDescending($query)
     {
         return $query->orderBy('id', 'desc');
-    }
-
-    public function scopeRandom($query)
-    {
-        return $query->orderBy(DB::raw('RAND()'));
-    }
-
-    public function scopeSorted($query, $direction = 'asc')
-    {
-        return $query->orderBy('position', $direction);
     }
 
     /*
