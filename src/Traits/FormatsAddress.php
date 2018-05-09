@@ -161,6 +161,20 @@ trait FormatsAddress
     }
 
     /**
+     * The street/house number only
+     */
+    public function getStreetNumber()
+    {
+        preg_match('/^[0-9-]*/', $this->getAddress1(), $matches);
+
+        if (empty($matches)) {
+            return;
+        }
+
+        return $matches[0];
+    }
+
+    /**
      * Address line 1
      */
     public function getAddress1()
