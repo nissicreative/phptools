@@ -9,7 +9,7 @@ trait HasAvatar
     /**
      * Defer to Gravatar image if not overridden.
      */
-    public function avatarSrc($size = 40, $default = null)
+    public function avatarSrc($size = 40, $default = 'mm')
     {
         return $this->gravatarSrc($size, $default);
     }

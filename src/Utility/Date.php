@@ -20,7 +20,7 @@ class Date
             354 => 'winter', // Dec 21
             264 => 'fall',   // Sep 21
             172 => 'summer', // Jun 21
-            80  => 'spring', // Mar 21
+            80 => 'spring',  // Mar 21
         ];
 
         foreach ($seasonStarts as $day => $season) {
@@ -60,21 +60,22 @@ class Date
      *
      * @return array
      */
-    public function daysOfWeek($keyFormat = 'D', $valFormat = 'l')
+    public function daysOfWeek($keyFormat = 'D', $valFormat = 'l', array $days = null)
     {
-        $weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-        $days = [];
-
-        foreach ($weekDays as $day) {
-            $carbon = Carbon::createFromFormat('D', $day);
-            $key    = $carbon->format($keyFormat);
-            $val    = $carbon->format($valFormat);
-
-            $days[$key] = $val;
+        if ( ! is_array($days)) {
+            $days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         }
 
-        return $days;
+        return collect($days)
+            ->keyBy(function ($day) use ($keyFormat) {
+                $carbon = Carbon::createFromFormat('D', $day);
+                return $carbon->format($keyFormat);
+            })
+            ->map(function ($day) use ($valFormat) {
+                $carbon = Carbon::createFromFormat('D', $day);
+                return $carbon->format($valFormat);
+            })
+            ->toArray();
     }
 
     /**

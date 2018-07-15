@@ -24,7 +24,7 @@ class Format
 
         // Optional country code (1), optional area code (first number 2-9), seven digit phone
         if ( ! preg_match('@^(1)?([2-9][0-9]{2})?([0-9]{3})([0-9]{4}$)@', $digits, $matches)) {
-            return false;
+            return;
         }
 
         $country    = $matches[1];
