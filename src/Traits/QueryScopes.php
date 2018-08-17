@@ -74,8 +74,19 @@ trait QueryScopes
         $sample = static::first() ?: new static();
 
         // Search all columns unless a `searchable` array is defined in the model
-        $defaultColumns = array_keys($sample->toArray());
-        $searchColumns  = collect(array_get($this->searchable, 'columns', $defaultColumns));
+        $defaultColumns = collect($sample->toArray())
+            ->keys()
+            ->reject(function ($column) {
+                return in_array($column, ['id', 'password', 'remember_token'])
+                || ends_with($column, '_id')
+                || ends_with($column, '_at')
+                || ends_with($column, '_on');
+            })
+            ->map(function ($key) {
+                return '`' . $key . '`';
+            });
+
+        $searchColumns = collect(array_get($this->searchable, 'columns', $defaultColumns));
 
         // Use joins if provided in `searchable` array; if not, an empty array
         $joins = array_get($this->searchable, 'joins', []);
