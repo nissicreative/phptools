@@ -35,4 +35,12 @@ trait HasAvatar
     {
         return $this->defaultAvatar ? url($this->defaultAvatar) : null;
     }
+
+    /**
+     * The avatar_uri accessor.
+     */
+    public function getAvatarUriAttribute($val)
+    {
+        return $this->avatarSrc('256');
+    }
 }
