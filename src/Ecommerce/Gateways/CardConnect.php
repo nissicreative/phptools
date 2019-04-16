@@ -15,15 +15,15 @@ class CardConnect
 
     public function __construct($url, $username = null, $password = null)
     {
-        $this->username   = $username;
-        $this->password   = $password;
-        $this->baseUri    = $url . '/cardconnect/rest/';
+        $this->username = $username;
+        $this->password = $password;
+        $this->baseUri = $url . '/cardconnect/rest/';
         $this->authstring = 'Basic ' . base64_encode("$username:$password");
 
         $this->client = new Client([
             'base_uri' => $url . '/cardconnect/rest/',
-            'headers'  => [
-                'Content-Type'  => 'application/json',
+            'headers' => [
+                'Content-Type' => 'application/json',
                 'Authorization' => $this->authstring,
             ],
         ]);
@@ -44,7 +44,7 @@ class CardConnect
     {
         $defaults = [
             'currency' => 'USD',
-            'country'  => 'US',
+            'country' => 'US',
             'tokenize' => 'Y',
         ];
 
@@ -70,7 +70,7 @@ class CardConnect
     {
         $defaults = [
             'profileupdate' => 'N',
-            'defaultacct'   => 'Y',
+            'defaultacct' => 'Y',
         ];
 
         $requestData += $defaults;
@@ -85,6 +85,8 @@ class CardConnect
 
         $responseBody = (string) $res->getBody(); // JSON String
 
+        logger('CC Response', json_decode($responseBody, true));
+
         return json_decode($responseBody);
     }
 
@@ -93,13 +95,48 @@ class CardConnect
      */
     public function refund($requestData = [])
     {
+        // First, try to void the transaction
+        $voidResponse = $this->void($requestData);
+        if ($voidResponse->respstat == 'A') {
+            return $voidResponse;
+        }
+
         $defaults = [];
 
         $requestData += $defaults;
 
+        logger('Attempting to refund a transaction', $requestData);
+
         $requestBody = json_encode($requestData);
 
         $request = new Request('PUT', $this->baseUri . 'refund');
+
+        $res = $this->client->send($request, [
+            'body' => $requestBody,
+        ]);
+
+        $responseBody = (string) $res->getBody(); // JSON String
+
+        logger('CC Response', json_decode($responseBody, true));
+
+        return json_decode($responseBody);
+
+    }
+
+    /**
+     * Void a transaction.
+     */
+    public function void($requestData = [])
+    {
+        $defaults = [];
+
+        $requestData += $defaults;
+
+        logger('Attempting to void a transaction', $requestData);
+
+        $requestBody = json_encode($requestData);
+
+        $request = new Request('PUT', $this->baseUri . 'void');
 
         $res = $this->client->send($request, [
             'body' => $requestBody,
