@@ -1,13 +1,17 @@
 {
     "name": "nissicreative/phptools",
     "description": "A collection of traits and utilities to assist with common requirements in PHP development.",
-    "keywords": ["php", "utility", "tools"],
+    "keywords": [
+        "php",
+        "utility",
+        "tools"
+    ],
     "require": {
         "php": ">=7.1",
         "nesbot/carbon": "^1.21|^2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7|^6.2|^7.0|^8.0"
+        "phpunit/phpunit": "^5.7|^6.2|^7.0|^8.0|^9.0"
     },
     "license": "MIT",
     "authors": [
