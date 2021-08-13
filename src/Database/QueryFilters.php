@@ -2,8 +2,9 @@
 
 namespace Nissi\Database;
 
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 abstract class QueryFilters
 {
@@ -42,12 +43,12 @@ abstract class QueryFilters
         $this->builder = $builder;
 
         foreach ($this->filters() as $name => $value) {
-            $methodName = camel_case($name);
+            $methodName = Str::camel($name);
 
             if (is_array($value) || strlen($value)) {
-                $this->$methodName($value);
+                $this->{$methodName}($value);
             } else {
-                $this->$methodName();
+                $this->{$methodName}();
             }
         }
 
@@ -63,7 +64,8 @@ abstract class QueryFilters
     {
         return collect($this->request->all())
             ->filter(function ($value, $name) {
-                $methodName = camel_case($name);
+                $methodName = Str::camel($name);
+
                 return method_exists($this, $methodName);
             });
     }
@@ -71,7 +73,7 @@ abstract class QueryFilters
     /**
      * A list of all valid query parameter names being applied.
      *
-     * @return Array
+     * @return array
      */
     public function filterKeys($includeEmpty = false)
     {
@@ -85,5 +87,4 @@ abstract class QueryFilters
             })
             ->keys();
     }
-
 }

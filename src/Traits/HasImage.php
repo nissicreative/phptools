@@ -3,6 +3,7 @@
 namespace Nissi\Traits;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 
 trait HasImage
 {
@@ -13,7 +14,7 @@ trait HasImage
     {
         $attribute = $this->getImagePathAttributeName();
 
-        if ( ! $this->$attribute) {
+        if (! $this->{$attribute}) {
             return $default;
         }
 
@@ -21,7 +22,7 @@ trait HasImage
             '/%s/%s/%s',
             config('imagecache.route', 'images/cache'),
             $size,
-            basename($this->$attribute)
+            basename($this->{$attribute})
         );
     }
 
@@ -46,7 +47,7 @@ trait HasImage
      */
     public function getImageDirectory()
     {
-        return $this->imageDirectory ?: str_slug($this->getTable());
+        return $this->imageDirectory ?: Str::slug($this->getTable());
     }
 
     /**
@@ -56,5 +57,4 @@ trait HasImage
     {
         return $this->imagePathAttributeName ?: 'image_path';
     }
-
 }

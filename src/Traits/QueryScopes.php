@@ -1,7 +1,10 @@
 <?php
+
 namespace Nissi\Traits;
 
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Nissi\Database\QueryFilters;
 
 trait QueryScopes
@@ -78,18 +81,18 @@ trait QueryScopes
             ->keys()
             ->reject(function ($column) {
                 return in_array($column, ['id', 'password', 'remember_token'])
-                || ends_with($column, '_id')
-                || ends_with($column, '_at')
-                || ends_with($column, '_on');
+                || Str::endsWith($column, '_id')
+                || Str::endsWith($column, '_at')
+                || Str::endsWith($column, '_on');
             })
             ->map(function ($key) {
                 return '`' . $key . '`';
             });
 
-        $searchColumns = collect(array_get($this->searchable, 'columns', $defaultColumns));
+        $searchColumns = collect(Arr::get($this->searchable, 'columns', $defaultColumns));
 
         // Use joins if provided in `searchable` array; if not, an empty array
-        $joins = array_get($this->searchable, 'joins', []);
+        $joins = Arr::get($this->searchable, 'joins', []);
 
         // Split the search into tokens
         $terms = preg_split('~\W+~', $q);
@@ -104,7 +107,7 @@ trait QueryScopes
         }
 
         // Additional constraints to be passed as "where" clauses
-        $constraints = array_get($this->searchable, 'constraints', []);
+        $constraints = Arr::get($this->searchable, 'constraints', []);
 
         foreach ($constraints as $column => $constraint) {
             list($operator, $value) = $constraint;
@@ -115,7 +118,7 @@ trait QueryScopes
         $collection = collect([]);
 
         $searchColumns->each(function ($searchColumn) use (&$collection) {
-            if (ends_with($searchColumn, '*')) {
+            if (Str::endsWith($searchColumn, '*')) {
                 // "Wildcard" searches like 'users.*'
                 $table = explode('.', $searchColumn)[0];
 
@@ -123,15 +126,15 @@ trait QueryScopes
                 $columns = collect($this->getConnection()->getSchemaBuilder()->getColumnListing($table))
                     ->reject(function ($column) {
                         return in_array($column, ['id', 'password', 'remember_token'])
-                        || ends_with($column, '_id')
-                        || ends_with($column, '_at')
-                        || ends_with($column, '_on');
+                        || Str::endsWith($column, '_id')
+                        || Str::endsWith($column, '_at')
+                        || Str::endsWith($column, '_on');
                     })->map(function ($column) use ($table) {
-                    return sprintf('`%s`.`%s`', trim($table, '`'), $column);
-                });
+                        return sprintf('`%s`.`%s`', trim($table, '`'), $column);
+                    });
 
                 $collection = $collection->merge($columns);
-            } elseif (str_contains($searchColumn, ',')) {
+            } elseif (Str::contains($searchColumn, ',')) {
                 // Comma-separated columns; i.e. "users.first_name, last_name, email"
                 list($table, $columns) = explode('.', $searchColumn);
 
@@ -153,7 +156,7 @@ trait QueryScopes
         // Search through all requested columns for each token
         foreach ($terms as $term) {
             $term = trim($this->getConnection()->getPdo()->quote($term), "'");
-            $query->whereRaw("CONCAT_WS('', {$concatenated}) LIKE '%$term%'");
+            $query->whereRaw("CONCAT_WS('', {$concatenated}) LIKE '%{$term}%'");
         }
 
         // Avoid duplicate records
